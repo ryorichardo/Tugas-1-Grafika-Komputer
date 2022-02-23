@@ -1,4 +1,9 @@
 "use strict";
+import Polygon from "./poly.js";
+
+var listPolygon = [];
+listPolygon.push(new Polygon())
+var count = 18
 
 function main() {
   // Get A WebGL context
@@ -8,27 +13,20 @@ function main() {
   if (!gl) {
     return;
   }
-
   // setup GLSL program
   var program = webglUtils.createProgramFromScripts(gl, ["vertex-shader-2d", "fragment-shader-2d"]);
-
   // look up where the vertex data needs to go.
   var positionLocation = gl.getAttribLocation(program, "a_position");
-
   // lookup uniforms
   var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
   var colorLocation = gl.getUniformLocation(program, "u_color");
-
   // Create a buffer to put positions in
   var positionBuffer = gl.createBuffer();
   // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-  setGeometry(gl);
 
   var color = [Math.random(), Math.random(), Math.random(), 1];
-
-  drawScene();
 
   // Setup a ui.
   webglLessonsUI.setupSlider("#Red", {value: color[0], slide: updateColor(0), min: 0, max: 1, step: 0.01, precision: 2});
@@ -38,12 +36,25 @@ function main() {
   function updateColor(index) {
     return function(event, ui) {
       color[index] = ui.value;
-      drawScene();
+      drawScene(count);
     };
   }
 
+  var coordinates = [];
+  listPolygon.forEach(polygon => {
+    polygon.coordinate.forEach(num => {
+      coordinates.push(num)
+    });
+  });
+
+  
+  var listCoordinate = new Float32Array(coordinates);
+    
+  setGeometry(gl, listCoordinate);
+  drawScene(count)
+
   // Draw the scene.
-  function drawScene() {
+  function drawScene(count) {
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
 
     // Tell WebGL how to convert from clip space to pixels
@@ -79,41 +90,32 @@ function main() {
     // Draw the geometry.
     var primitiveType = gl.TRIANGLES;
     var offset = 0;
-    var count = 18;  // 6 triangles in the 'F', 3 points per triangle
     gl.drawArrays(primitiveType, offset, count);
   }
+
 }
 
-// Fill the buffer with the values that define a letter 'F'.
-function setGeometry(gl) {
+function setGeometry(gl, coordinate) {
   gl.bufferData(
       gl.ARRAY_BUFFER,
-      new Float32Array([
-          100 + 60, 100 + 30*Math.sqrt(3),
-          100 + 90, 100,
-          100 + 30, 100,
-
-          100 + 60, 100 + 30*Math.sqrt(3),
-          100 + 90, 100,
-          100 + 120, 100 + 30*Math.sqrt(3),
-
-          100 + 60, 100 + 30*Math.sqrt(3),
-          100 + 120, 100 + 30*Math.sqrt(3),
-          100 + 90, 100 + 2*30*Math.sqrt(3), 
-
-          100 + 60, 100 + 30*Math.sqrt(3),
-          100 + 90, 100 + 2*30*Math.sqrt(3), 
-          100 + 30, 100 + 2*30*Math.sqrt(3),
-
-          100 + 60, 100 + 30*Math.sqrt(3),
-          100 + 30, 100 + 2*30*Math.sqrt(3),
-          100, 100 + 30*Math.sqrt(3),
-
-          100 + 60, 100 + 30*Math.sqrt(3),
-          100, 100 + 30*Math.sqrt(3),
-          100 + 30, 100,
-      ]),
+      coordinate,
       gl.STATIC_DRAW);
 }
+
+function addPolygon() {
+  listPolygon.push(new Polygon());
+  count += 18;
+
+  var listCoordinate = new Array();
+  listPolygon.forEach(polygon => {
+    listCoordinate.concat(polygon.coordinate);
+  });
+
+  main();
+}
+
+document.getElementById("addPolygon").addEventListener("click", addPolygon)
+
+
 
 main();
