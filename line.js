@@ -1,4 +1,20 @@
 "use strict";
+let _id = 1;
+
+class Line {
+    constructor() {
+        this.id = _id++;
+        this.coordinate = [
+            Math.random()*1300, Math.random()*600,
+            Math.random()*1300, Math.random()*600,
+        ];
+    this.color = [Math.random(), Math.random(), Math.random(), 1];
+    }
+}
+
+var listLine = [];
+listLine.push(new Line())
+var count = 2
 
 function main() {
   // Get A WebGL context
@@ -27,14 +43,25 @@ function main() {
   // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   // Put geometry data into buffer
-  setGeometry(gl);
 
   var translation = [100, 150];
   var rotation = [0, 1];
   var scale = [1, 1];
   var color = [Math.random(), Math.random(), Math.random(), 1];
 
-  drawScene();
+
+  
+  var coordinates = [];
+  listLine.forEach(line => {
+    line.coordinate.forEach(num => {
+      coordinates.push(num)
+    });
+  });
+  
+  var listCoordinate = new Float32Array(coordinates);
+    
+  setGeometry(gl, listCoordinate);
+  drawScene(count);
 
   // Setup a ui.
   webglLessonsUI.setupSlider("#x", {value: translation[0], slide: updatePosition(0), max: gl.canvas.width });
@@ -46,7 +73,7 @@ function main() {
   function updatePosition(index) {
     return function(event, ui) {
       translation[index] = ui.value;
-      drawScene();
+      drawScene(count);
     };
   }
 
@@ -55,18 +82,18 @@ function main() {
     var angleInRadians = angleInDegrees * Math.PI / 180;
     rotation[0] = Math.sin(angleInRadians);
     rotation[1] = Math.cos(angleInRadians);
-    drawScene();
+    drawScene(count);
   }
 
   function updateScale(index) {
     return function(event, ui) {
       scale[index] = ui.value;
-      drawScene();
+      drawScene(count);
     };
   }
 
   // Draw the scene.
-  function drawScene() {
+  function drawScene(count) {
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
 
     // Tell WebGL how to convert from clip space to pixels
@@ -111,21 +138,40 @@ function main() {
     // Draw the geometry.
     var primitiveType = gl.LINES;
     var offset = 0;
-    var count = 2;  // 6 triangles in the 'F', 3 points per triangle
     gl.drawArrays(primitiveType, offset, count);
   }
 }
 
 // Fill the buffer with the values that define a letter 'F'.
-function setGeometry(gl) {
+function setGeometry(gl, coordinate) {
   gl.bufferData(
       gl.ARRAY_BUFFER,
-      new Float32Array([
-          // left column
-          0, 0,
-          30, 40,
-      ]),
+      coordinate,
       gl.STATIC_DRAW);
 }
+
+function addLine() {
+  listLine.push(new Line());
+  count += 2;
+
+  var listCoordinate = new Array();
+  listLine.forEach(line => {
+    listCoordinate.concat(line.coordinate);
+  });
+
+  main();
+}
+
+document.getElementById("addLine").addEventListener("click", addLine)
+
+
+function saveLine(el) {
+  var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(listLine));
+  el.setAttribute("href", "data:" + data);
+  el.setAttribute("download", "data.json");
+  //localStorage.setItem("data", JSON.stringify(listLine));
+}
+
+document.getElementById("saveLine").addEventListener("click", saveLine(document.getElementById("saveLine")))
 
 main();
