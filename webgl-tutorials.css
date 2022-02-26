@@ -47,7 +47,8 @@ html {
   #ui select,
   #ui option,
   #ui canvas,
-  #ui button {
+  #ui button,
+  #ui a {
     pointer-events: auto;
   }
   
