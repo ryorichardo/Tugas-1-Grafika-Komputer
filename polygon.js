@@ -116,6 +116,13 @@ function addPolygon() {
 
 document.getElementById("addPolygon").addEventListener("click", addPolygon)
 
+function help() {
+  alert(
+    "Tekan tombol Add Polygon untuk menambah polygon\n" +
+    "Gunakan slider untuk mengatur kontras warna merah, hijau, dan biru"
+  )
+}
 
+document.getElementById("help").addEventListener("click", help)
 
 main();
