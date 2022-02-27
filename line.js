@@ -232,5 +232,19 @@ document.getElementById("readLine").addEventListener("click", function() {
   fr.readAsText(file);
 });
 
+
+function help() {
+  alert(
+    "Tekan tombol Add Line untuk menambah garis\n" +
+    "Gunakan slider untuk mengatur koordinat, skala, dan derajat kemiringan garis\n" +
+    "Tekat tombol Save Line untuk melakukan download dari garis yang telah digambar\n" +
+    "Untuk load garis, lakukan input file dan pilih file dalam bentuk .txt\n" +
+    "Kemudian tekan tombol Load Line"
+  )
+}
+
+document.getElementById("help").addEventListener("click", help)
+
+
 main();
 
