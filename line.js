@@ -200,7 +200,7 @@ document.getElementById("saveLine").addEventListener("click", function () {
   download(filename, text);
 });
 
-document.getElementById("loadLine").addEventListener("click", function() {
+document.getElementById("readLine").addEventListener("click", function() {
   var fileElement = document.getElementById("inputfile");
   var fr=new FileReader(); 
   fr.onload = function(evt) {
