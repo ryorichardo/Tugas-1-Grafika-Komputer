@@ -25,8 +25,7 @@ function main() {
   // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-
-  var color = [Math.random(), Math.random(), Math.random(), 1];
+  var color = listPolygon[listPolygon.length-1].color;
 
   // Setup a ui.
   webglLessonsUI.setupSlider("#Red", {value: color[0], slide: updateColor(0), min: 0, max: 1, step: 0.01, precision: 2});
@@ -40,6 +39,7 @@ function main() {
     };
   }
 
+  console.log(listPolygon)
   var coordinates = [];
   listPolygon.forEach(polygon => {
     polygon.coordinate.forEach(num => {
@@ -124,5 +124,64 @@ function help() {
 }
 
 document.getElementById("help").addEventListener("click", help)
+
+function download(file, text) {
+              
+  //creating an invisible element
+  var element = document.createElement('a');
+  element.setAttribute('href', 
+  'data:text/plain;charset=utf-8, '
+  + encodeURIComponent(text));
+  element.setAttribute('download', file);
+
+  document.body.appendChild(element);
+
+  //onClick property
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+
+document.getElementById("savePolygon").addEventListener("click", function () {
+  var  filename = "filePolygon";
+  var text = JSON.stringify(listPolygon);
+  download(filename, text);
+});
+
+document.getElementById("readPolygon").addEventListener("click", function() {
+  var fileElement = document.getElementById("inputfile");
+  var fr=new FileReader(); 
+  fr.onload = function(evt) {
+    console.log(evt.target.result);
+    var content = evt.target.result;
+    var obj = JSON.parse(content.substring(1, content.length));
+    listPolygon = []
+    obj.forEach(item => {
+      console.log(item.id)
+      listPolygon.push(new Polygon(
+        item.id,
+        item.x,
+        item.y,
+        item.r,
+        item.coordinate,
+        item.color
+        ))
+      count += 18;
+
+      var listCoordinate = new Array();
+      listPolygon.forEach(polygon => {
+        listCoordinate.concat(polygon.coordinate);
+      });
+
+      main();
+    });
+
+    
+
+  };
+  var file = fileElement.files[0];
+  fr.readAsText(file);
+});
 
 main();
