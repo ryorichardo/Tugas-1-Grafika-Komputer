@@ -2,18 +2,22 @@
 let _id = 1;
 
 class Line {
-    constructor() {
+    constructor( c1,c2,c3,c4,r,g,b ) {
         this.id = _id++;
-        this.coordinate = [
-            Math.random()*1300, Math.random()*600,
-            Math.random()*1300, Math.random()*600,
-        ];
-    this.color = [Math.random(), Math.random(), Math.random(), 1];
-    }
+        this.coordinate = [c1,c2,c3,c4];
+        // [
+        //     Math.random()*1300, Math.random()*600,
+        //     Math.random()*1300, Math.random()*600,
+        // ];
+    this.color = [r,g,b,1];//[Math.random(), Math.random(), Math.random(), 1];
+    };
 }
-
 var listLine = [];
-listLine.push(new Line())
+listLine.push(new Line(
+    Math.random()*1300, Math.random()*600,
+    Math.random()*1300, Math.random()*600, 
+    Math.random(), Math.random(), Math.random()
+    ))
 var count = 2
 
 function main() {
@@ -151,7 +155,11 @@ function setGeometry(gl, coordinate) {
 }
 
 function addLine() {
-  listLine.push(new Line());
+  listLine.push(new Line(
+    Math.random()*1300, Math.random()*600,
+    Math.random()*1300, Math.random()*600, 
+    Math.random(), Math.random(), Math.random()
+    ))
   count += 2;
 
   var listCoordinate = new Array();
@@ -162,16 +170,67 @@ function addLine() {
   main();
 }
 
+
 document.getElementById("addLine").addEventListener("click", addLine)
 
+function download(file, text) {
+              
+  //creating an invisible element
+  var element = document.createElement('a');
+  element.setAttribute('href', 
+  'data:text/plain;charset=utf-8, '
+  + encodeURIComponent(text));
+  element.setAttribute('download', file);
 
-function saveLine(el) {
-  var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(listLine));
-  el.setAttribute("href", "data:" + data);
-  el.setAttribute("download", "data.json");
-  //localStorage.setItem("data", JSON.stringify(listLine));
+  // Above code is equivalent to
+  // <a href="path of file" download="file name">
+
+  document.body.appendChild(element);
+
+  //onClick property
+  element.click();
+
+  document.body.removeChild(element);
 }
 
-document.getElementById("saveLine").addEventListener("click", saveLine(document.getElementById("saveLine")))
+
+document.getElementById("saveLine").addEventListener("click", function () {
+  var  filename = "file123";
+  var text = JSON.stringify(listLine);
+  download(filename, text);
+});
+
+document.getElementById("loadLine").addEventListener("click", function() {
+  var fileElement = document.getElementById("inputfile");
+  var fr=new FileReader(); 
+  fr.onload = function(evt) {
+    console.log(evt.target.result);
+    var content = evt.target.result;
+    var obj = JSON.parse(content.substring(1, content.length));
+    // console.log(obj);
+    obj.forEach(item => {
+      // console.log(item.color);
+      listLine.push(new Line(
+        item.coordinate[0], item.coordinate[1],
+        item.coordinate[2], item.coordinate[3], 
+        item.color[0], item.color[1], item.color[2]
+        ))
+      count += 2;
+
+      var listCoordinate = new Array();
+      listLine.forEach(line => {
+        listCoordinate.concat(line.coordinate);
+      });
+
+      main();
+    });
+
+    
+
+  };
+  var file = fileElement.files[0];
+  fr.readAsText(file);
+});
 
 main();
+
