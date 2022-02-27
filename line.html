@@ -3,10 +3,10 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
-    <!-- <canvas id="canvas" width="500" height="500" style="width:700px; height:700px;"></canvas> -->
     <div id="uiContainer">
       <div id="ui">
-        
+        <a href="line.html">line</a>
+        <a href="polygon.html">polygon</a>
         <div id="x"></div>
         <div id="y"></div>
         <div id="angle"></div>
@@ -14,11 +14,8 @@
         <div id="scaleY"></div>
         <button id="addLine">Add Line</button>
         <button id="saveLine">Save Line</button>
-        <!-- <a id="downloadLine" href="/images/myw3schoolsimage.jpg" download>Lorem ipsum </a> -->
-        
         <input type="file" name="inputfile" id="inputfile">
-        <button id="loadLine">Load Line</button>
-        <!-- <pre id="output"></pre>   -->
+        <button id="readLine">Read Line</button>
       </div>
     </div>
     <!-- vertex shader -->
@@ -70,12 +67,6 @@
     and https://webglfundamentals.org/webgl/lessons/webgl-resizing-the-canvas.html
     for webgl-utils, m3, m4, and webgl-lessons-ui.
     -->
-    <!-- <script> -->
-      <!-- var canvas = document.getElementById('canvas');
-      var gl = canvas.getContext('experimental-webgl');
-      gl.clearColor(0.9,0.9,0.8,1);
-      gl.clear(gl.COLOR_BUFFER_BIT); -->
-    <!-- </script> -->
     <script src="webgl-utils.js"></script>
     <script src="webgl-lessons-ui.js"></script>
     <script src="line.js"></script>
