@@ -19,7 +19,7 @@ class Rectangle {
             this.y,this.y,
             this.y,this.x
         ];
-    this.color = [Math.random(), Math.random(), Math.random(), 1];
+    this.color = [0,0,0,1];
     }
 }
 
@@ -58,7 +58,7 @@ function main() {
   var translation = [100, 150];
   var rotation = [0, 1];
   var scale = [1, 1];
-  var color = [Math.random(), Math.random(), Math.random(), 1];
+  var color = [0, 0, 0, 1];
 
 
   
@@ -75,26 +75,11 @@ function main() {
   drawScene(count);
 
   // Setup a ui.
-  webglLessonsUI.setupSlider("#x", {value: translation[0], slide: updatePosition(0), max: gl.canvas.width });
-  webglLessonsUI.setupSlider("#y", {value: translation[1], slide: updatePosition(1), max: gl.canvas.height});
-  webglLessonsUI.setupSlider("#angle", {slide: updateAngle, max: 360});
+
   webglLessonsUI.setupSlider("#scaleX", {value: scale[0], slide: updateScale(0), min: -5, max: 5, step: 0.01, precision: 2});
   webglLessonsUI.setupSlider("#scaleY", {value: scale[1], slide: updateScale(1), min: -5, max: 5, step: 0.01, precision: 2});
 
-  function updatePosition(index) {
-    return function(event, ui) {
-      translation[index] = ui.value;
-      drawScene(count);
-    };
-  }
 
-  function updateAngle(event, ui) {
-    var angleInDegrees = 360 - ui.value;
-    var angleInRadians = angleInDegrees * Math.PI / 180;
-    rotation[0] = Math.sin(angleInRadians);
-    rotation[1] = Math.cos(angleInRadians);
-    drawScene(count);
-  }
 
   function updateScale(index) {
     return function(event, ui) {
@@ -174,5 +159,74 @@ function addRectangle() {
 }
 
 document.getElementById("addRectangle").addEventListener("click", addRectangle)
+
+function download(file, text) {
+              
+  //creating an invisible element
+  var element = document.createElement('a');
+  element.setAttribute('href', 
+  'data:text/plain;charset=utf-8, '
+  + encodeURIComponent(text));
+  element.setAttribute('download', file);
+
+  document.body.appendChild(element);
+
+  //onClick property
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+document.getElementById("saveRectangle").addEventListener("click", function () {
+  var  filename = "fileRectangle";
+  var text = JSON.stringify(listRectangle);
+  download(filename, text);
+});
+
+document.getElementById("readRectangle").addEventListener("click", function() {
+  var fileElement = document.getElementById("inputfile");
+  var fr=new FileReader(); 
+  fr.onload = function(evt) {
+    console.log(evt.target.result);
+    var content = evt.target.result;
+    var obj = JSON.parse(content.substring(1, content.length));;
+    listRectangle = []
+    obj.forEach(item => {
+      console.log(item.id);
+      listRectangle.push(new Rectangle(
+        item.id,
+        item.x,
+        item.y,
+        item.coordinate,
+        item.color
+        ))
+      count += 8;
+
+      var listCoordinate = new Array();
+      listRectangle.forEach(Rectangle => {
+        listCoordinate.concat(Rectangle.coordinate);
+      });
+
+      main();
+    });  
+
+  };
+  var file = fileElement.files[0];
+  fr.readAsText(file);
+});
+
+
+function help() {
+  alert(
+    "Tekan tombol Add Rectangle untuk menambah garis\n" +
+    "Gunakan slider untuk mengatur skala x dan y\n" +
+    "Tekat tombol Save Rectangle untuk melakukan download dari garis yang telah digambar\n" +
+    "Untuk load garis, lakukan input file dan pilih file dalam bentuk .txt\n" +
+    "Kemudian tekan tombol Load Rectangle"
+  )
+}
+
+document.getElementById("help").addEventListener("click", help)
+
 
 main();
