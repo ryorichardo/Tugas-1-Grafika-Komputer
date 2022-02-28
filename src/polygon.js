@@ -119,7 +119,10 @@ document.getElementById("addPolygon").addEventListener("click", addPolygon)
 function help() {
   alert(
     "Tekan tombol Add Polygon untuk menambah polygon\n" +
-    "Gunakan slider untuk mengatur kontras warna merah, hijau, dan biru"
+    "Gunakan slider untuk mengatur kontras warna merah, hijau, dan biru\n" +
+    "Tekat tombol Save Polygon untuk melakukan download dari polygon yang telah digambar\n" +
+    "Untuk load polygon, lakukan input file dan pilih file dalam bentuk .txt\n" +
+    "Kemudian tekan tombol Load Polygon"
   )
 }
 
