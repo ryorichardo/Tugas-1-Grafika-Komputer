@@ -1,7 +1,7 @@
 let _id = 1;
 
 export default class Polygon {
-    constructor(id, x, y, z, coordinate, color) {
+    constructor(id, x, y, r, coordinate, color) {
         if (id === undefined) {
             console.log("hah")
             this.id = _id++
@@ -40,7 +40,7 @@ export default class Polygon {
             this.id = id;
             this.x = x;
             this.y = y;
-            this.z = z;
+            this.r = r;
             this.coordinate = coordinate;
             this.color = color;
         }
